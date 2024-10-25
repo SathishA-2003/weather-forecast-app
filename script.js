@@ -97,9 +97,37 @@ function getWeatherData(city, unit, hourlyorWeek){
         humidity.innerText = today.humidity + "%";
         visibility.innerText = today.visibility;
         airQuality.innerText = today.winddir;
+        measureUvIndex(today.uvindex);
+        updateHumidityStatus(today.humidity);
     });
 };
 
 function celciusToFahrenheit(temp){
     return ((temp * 9) / 5 + 32).toFixed(1);
 }
+
+//function to get uv index status
+function measureUvIndex(uvIndex){
+    if(uvIndex <= 2){
+        uvText.innerText = "Low";
+    }else if(uvIndex <= 5){
+        uvText.innerText = "Moderate";
+    }else if(uvIndex <= 7){
+        uvText.innerText = "High";
+    }else if(uvIndex <= 10){
+        uvText.innerText = "Very High";
+    }else{
+        uvText.innerText = "Extreme";
+    }
+}
+
+function updateHumidityStatus(){
+    if(humidity <= 30){
+        humidityStatus.innerText = "Low";
+    }else if(humidity <= 60){
+        humidityStatus.innerText = "Moderate";
+
+    }else{
+        humidityStatus.innerText = "High";
+    }
+} 
