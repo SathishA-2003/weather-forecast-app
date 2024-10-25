@@ -99,6 +99,10 @@ function getWeatherData(city, unit, hourlyorWeek){
         airQuality.innerText = today.winddir;
         measureUvIndex(today.uvindex);
         updateHumidityStatus(today.humidity);
+        updateVisibilityStatus(today.visibility);
+        updateAirQualityStatus(today.winddir);
+        sunRise.innerText = convertTimeTo12HoursFormat(today.sunrise);
+        sunSet.innerText = convertTimeTo12HoursFormat(today.sunset);
     });
 };
 
@@ -130,4 +134,55 @@ function updateHumidityStatus(){
     }else{
         humidityStatus.innerText = "High";
     }
+}
+
+function updateVisibilityStatus(){
+    if(visibility <= 0.3){
+        visibilityStatus.innerText = "Dense Fog";
+    }
+    else if(visibility <= 0.16){
+        visibilityStatus.innerText = "Moderate Fog";
+    } else if(visibility <= 0.35){
+        visibilityStatus.innerText = "Light Fog";
+    } else if(visibility <= 1.13){
+        visibilityStatus.innerText = "Very Light Fog";
+    } else if(visibility <= 2.26){
+        visibilityStatus.innerText = "Light Mist";
+    } else if(visibility <= 5.4){
+        visibilityStatus.innerText = "Very Light Mist";
+    } else if(visibility <= 10.8){
+        visibilityStatus.innerText = "Clear Air";
+    }else{
+        visibilityStatus.innerText = "Very Clear Air";
+    }
+} 
+
+function updateAirQualityStatus(){
+    if(airQuality <= 50){
+        airQualitystatus.innerText = "Good 👌";
+    }else if(airQuality <= 100){
+        airQualitystatus.innerText = "Moderate 😧";
+    }else if(airQuality <= 150){
+        airQualitystatus.innerText = "Unhealthy for Sensitive Groups 😷";
+    }else if(airQuality <= 200){
+        airQualitystatus.innerText = "Unhealthy 😷"
+    }else if(airQuality <= 250){
+        airQualitystatus.innerText = "Very Unhealthy 😨"
+    }else{
+        airQualitystatus.innerText = "Hazardous 😱"
+    }
+    
+}
+
+function convertTimeTo12HoursFormat(time){
+    let hour =time.split(":") [0];
+    let minute =time.split(":") [1];
+    let ampm = hour >= 12 ? "pm" :"am";
+    hour = hour & 12;
+    hour = hour ? hour : 12; //the zero hour should be 12.
+    hour = hour < 10 ? "0" + hour : hour; //add prefix zero if less than 10
+    minute = minute < 10 ? "0" + minute : minute;
+    let strTime = hour + ":" + minute + " " + ampm;
+    return strTime;
+
 } 
