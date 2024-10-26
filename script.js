@@ -14,7 +14,8 @@ visibility = document.querySelector('.visibility'),
 humidityStatus = document.querySelector('.humidity-status'),
 airQuality = document.querySelector('.air-quality'),
 airQualitystatus = document.querySelector('.air-quality-status'),
-visibilityStatus = document.querySelector('.visibility-status');
+visibilityStatus = document.querySelector('.visibility-status'),
+weatherCards = document.querySelector("#weather-cards");
 
 let currentCity = "";
 let currentUnit = "c";
@@ -103,6 +104,13 @@ function getWeatherData(city, unit, hourlyorWeek){
         updateAirQualityStatus(today.winddir);
         sunRise.innerText = convertTimeTo12HoursFormat(today.sunrise);
         sunSet.innerText = convertTimeTo12HoursFormat(today.sunset);
+        mainIcon.src = getIcon(today.icon);
+        if(hourlyorWeek === "hourly"){
+            updateForecast(data.days[0].hours , unit , "day")
+        }else{
+            updateForecast(data.days, unit,"week")
+        }
+        
     });
 };
 
@@ -185,4 +193,91 @@ function convertTimeTo12HoursFormat(time){
     let strTime = hour + ":" + minute + " " + ampm;
     return strTime;
 
-} 
+}
+
+function getIcon(condition){
+    if(condition === "Partly-cloudly-day"){
+        return "https://i.ibb.co/PZQXH8V/27.png";
+        
+    }else if(condition === "partly-cloudy-night"){
+        return "https://i.ibb.co/Kzkk59k/15.png";
+    }else if(condition === "rain"){
+        return "https://i.ibb.co/kBd2NTS/39.png";
+    }else if(condition === "clear-day"){
+        return "https://i.ibb.co/rb4rrJL/26.png";
+    }else if(condition === "clear-night"){
+        return "https://i.ibb.co/1nxNGHL/10.png";
+    }else{
+        return "https://i.ibb.co/rb4rrJL/26.png";
+    }    
+}
+
+function getDayName(date){
+    let day = new Date(date);
+    let days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+    ];
+    return days[day.getDay()];
+}
+
+function getHour(time){
+    let hour = time.split(":")[0];
+    let min = time.split(":")[1];
+    if(hour > 12){
+        hour = hour - 12;
+        return `${hour}:${min} PM`
+    }else{
+         return `${hour}:${min} AM`;
+    }
+}
+
+function updateForecast(data, unit, type){
+    weatherCards.innerHTML = "";
+
+    let day = 0;
+    let numCards = 0;
+    //24 cards if hourly weather and 7 for weekly
+    if(type === "day"){
+        numCards = 24;
+    }else{
+        numCards = 7;
+    }
+    for(let i=0; i < numCards; i++){
+        let card =  document.createElement("div");
+        card.classList.add("card");
+        //hour if hourly weather and 7 for weekly
+        let dayName = getHour(data[day].datetime);
+        if(type === "week"){
+            dayName = getDayName(data[day].datetime);
+        }
+        let dayTemp = data[day].temp;
+        if(unit === "f"){
+            dayTemp = celciusToFahrenheit(data[day].temp);
+        }
+        let iconCondition = data[day].icon;
+        let iconSrc = getIcon(iconCondition);
+        let tempUnit = "°C";
+        if(unit === "f"){
+            tempUnit = "°F";
+        }
+        card.innerHTML = `
+            <h2 class="day-name">${dayName}</h2>
+                <div class="card-icon">
+                    <img src="${iconSrc}" alt="icon">
+                </div>
+                <div class="day-temp">
+                    <h2 class="temp">${dayTemp}</h2>
+                    <span class="temp-unit">${tempUnit}</span>
+                </div>
+        `;
+            weatherCards.appendChild(card);
+            day++;
+
+        }
+}
