@@ -15,7 +15,12 @@ humidityStatus = document.querySelector('.humidity-status'),
 airQuality = document.querySelector('.air-quality'),
 airQualitystatus = document.querySelector('.air-quality-status'),
 visibilityStatus = document.querySelector('.visibility-status'),
-weatherCards = document.querySelector("#weather-cards");
+weatherCards = document.querySelector("#weather-cards"),
+celciusBtn = document.querySelector(".celcius"),
+fahrenheitBtn = document.querySelector(".fahrenheit"),
+hourlyBtn = document.querySelector(".hourly"),
+weekBtn = document.querySelector(".week"),
+tempUnit = document.querySelectorAll(".temp-unit");
 
 let currentCity = "";
 let currentUnit = "c";
@@ -280,4 +285,33 @@ function updateForecast(data, unit, type){
             day++;
 
         }
+}
+
+fahrenheitBtn.addEventListener("click", () => {
+    changeUnit("f");
+});
+celciusBtn.addEventListener("click", () => {
+    changeUnit("c");
+});
+
+
+function changeUnit(unit){
+    if(currentUnit !== unit){
+        currentUnit = unit;
+    {
+    //change unit on document
+    tempUnit.forEach((ele)=>{
+        ele.innerText = `°${unit.toUpperCase()}`;
+    });
+    if(unit === "c"){
+        celciusBtn.classList.add("active");
+        fahrenheitBtn.classList.remove("active");
+    }else{
+        celciusBtn.classList.remove("active");
+        fahrenheitBtn.classList.add("active");
+    }
+    //call get weather after change unit
+     getWeatherData(currentCity,currentUnit,hourlyorWeek); 
+  }
+ }
 }
